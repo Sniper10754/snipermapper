@@ -87,8 +87,6 @@ func main() {
 	startTime := time.Now()
 
 	duration := int(time.Since(startTime).Seconds())
-	
-	
 
 	fmt.Println("  Scan lasted " + strconv.Itoa(duration) +"s")
 
