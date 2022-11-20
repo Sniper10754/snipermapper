@@ -76,7 +76,7 @@ func main() {
 	timeout := 2
 
 	// Scan duration = timeout x ports to scan (x 2 because we scan tcp and udp)
-	fmt.Printf("  Scan maximum duration: %d~ seconds \n", timeout * (len(portsToScan) * 1))
+	fmt.Printf("  Scan maximum duration: %d~ seconds \n", timeout * (len(portsToScan) * 2))
 	
 	fmt.Println("  Scanning TCP ports")
 	tcpScanResult := scanPortList("tcp", host, portsToScan, 1)
