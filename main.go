@@ -52,15 +52,15 @@ func main() {
 	startTime := time.Now()
 
 	tcpScanResult := scannerapi.ScanPorts("tcp", host, portsToScan, int32(timeout))
-	udpScanResult := scannerapi.ScanPorts("udp", host, portsToScan, int32(timeout))
+	// udpScanResult := scannerapi.ScanPorts("udp", host, portsToScan, int32(timeout))
 
 	duration := int(time.Since(startTime).Seconds())
 
-	fmt.Println(" Scan durated " + strconv.Itoa(duration) +"s")
+	fmt.Println(" Scan lasted " + strconv.Itoa(duration) +"s")
 
 	fmt.Println("  Scan finished, listing results")
 
 	listScanReport(" tcp ->", tcpScanResult)
-	listScanReport(" udp ->", udpScanResult)
+	// listScanReport(" udp ->", udpScanResult)
 
 }
