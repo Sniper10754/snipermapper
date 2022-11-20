@@ -1,6 +1,8 @@
 # snipermapper
 Golang port of snipermapper
 
+[![asciicast](https://asciinema.org/a/ZzklcMPnglhRx62L3IKy6SMF9.svg)](https://asciinema.org/a/ZzklcMPnglhRx62L3IKy6SMF9)
+
 ## Install
 ```sh
 go get github.com/Sniper10754/snipermapper
