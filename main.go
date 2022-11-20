@@ -92,7 +92,8 @@ func main() {
 
 	fmt.Println("  Scan lasted " + strconv.Itoa(duration) +"s")
 
-	fmt.Println("  Scan finished, listing results\n")
+	fmt.Println("  Scan finished, listing results")
+	fmt.Println()
 
 	listScanReport("  tcp/", tcpScanResult)
 	listScanReport("  udp/", udpScanResult)
