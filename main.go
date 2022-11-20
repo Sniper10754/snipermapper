@@ -39,7 +39,7 @@ func scanPortList(netprotocol scannerapi.NetworkProtocol, host string, ports []i
 	var scanResult []scannerapi.ScanResult
 	
 	go func() {
-		scanResult = scannerapi.ScanPorts("tcp", host, ports, int32(timeout), scannerch)
+		scanResult = scannerapi.ScanPorts("tcp", host, ports, int32(timeout), &scannerch)
 	}()
 
 	for {
