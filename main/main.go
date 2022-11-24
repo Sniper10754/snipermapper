@@ -34,25 +34,25 @@ func listScanReport(prefix string, results []scannerapi.ScanResult) {
 	
 }
 
-func scanPortList(netprotocol scannerapi.NetworkProtocol, host string, ports []int, timeout int) []scannerapi.ScanResult {
-	scannerch := make(chan scannerapi.ScanResult, len(ports))
-	var scanResult []scannerapi.ScanResult
+func scanPortsWithPrompt(scanner scannerapi.PortScanner, start int, finish int) []scannerapi.ScanResult {
+	ch := make(chan scannerapi.ScanResult)
+	var ports []scannerapi.ScanResult
 	
 	go func() {
-		scanResult = scannerapi.ScanPorts("tcp", host, ports, int32(timeout), &scannerch)
+		ports = scannerapi.ScanPorts(scanner, start, finish, ch)
 	}()
 
 	for {
-		scanresult := <- scannerch
+		val, ok := (<- ch)
 
-		fmt.Printf("ﴚ  %d -> %s\r", scanresult.Port, strconv.FormatBool(scanresult.State))
-		
-		if scanresult.Port == ports[len(ports)-1] {
+		if ok {
+			fmt.Printf("Scanning %d...\r", val.Port)
+		} else {
 			break
 		}
 	}
 
-	return scanResult
+	return ports
 }
 
 func main() {
@@ -72,17 +72,21 @@ func main() {
 
 	fmt.Printf("ﯱ  Host IP: %s\n", addr[0])
 
-	portsToScan := makeRange(0, 80)
+	portStart := 0
+	portFinish := 80
 	timeout := 2
 
+	tcpPortScanner := scannerapi.NewScanner(scannerapi.TCP, host)
+	//udpPortScanner := scannerapi.NewScanner(scannerapi.UDP, host)
+	
 	// Scan duration = timeout x ports to scan (x 2 because we scan tcp and udp)
-	fmt.Printf("  Scan maximum duration: %d~ seconds \n", timeout * (len(portsToScan) * 2))
+	fmt.Printf("  Scan maximum duration: %d~ seconds \n", timeout * (portFinish * 2))
 	
 	fmt.Println("  Scanning TCP ports")
-	tcpScanResult := scanPortList("tcp", host, portsToScan, 1)
-
-	fmt.Println("  Scanning UDP ports")
-	udpScanResult := scanPortList("udp", host, portsToScan, 1)
+	tcpScanResult := scanPortsWithPrompt(tcpPortScanner, portStart, portFinish)
+	
+	//fmt.Println("  Scanning UDP ports")
+	//udpScanResult := nil //scanPortList("udp", host, portsToScan, 1)
 
 	startTime := time.Now()
 
@@ -94,6 +98,6 @@ func main() {
 	fmt.Println()
 
 	listScanReport("  tcp/", tcpScanResult)
-	listScanReport("  udp/", udpScanResult)
+	//listScanReport("  udp/", udpScanResult)
 
 }
