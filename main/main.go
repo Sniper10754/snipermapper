@@ -72,7 +72,7 @@ func main() {
 	fmt.Println(title)
 
 	if !stealth {
-		fmt.Println("Stealth scan enabled")
+		fmt.Println(" Stealth scan enabled")
 	}
 
 	fmt.Print("歷 Host: ")

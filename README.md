@@ -2,7 +2,7 @@
 Golang port of snipermapper
 
 
-[![asciicast](https://asciinema.org/a/wEgCmNxcXSQ4Ui2YNxiPdlRsY.svg)](https://asciinema.org/a/wEgCmNxcXSQ4Ui2YNxiPdlRsY)
+[![asciicast](https://asciinema.org/a/lnvEYEUsoCWiSu1HgjkaYpH7T.svg)](https://asciinema.org/a/lnvEYEUsoCWiSu1HgjkaYpH7T)
 
 
 ## Install
