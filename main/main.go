@@ -46,7 +46,7 @@ func scanPortsWithPrompt(scanner scannerapi.PortScanner, start int, finish int) 
 		val, ok := (<- ch)
 
 		if ok {
-			fmt.Printf("Scanning %d...\r", val.Port)
+			fmt.Printf("%d -> %s\r", val.Port, strconv.FormatBool(val.State))
 		} else {
 			break
 		}
