@@ -4,6 +4,7 @@ import (
 	"net"
 	"strconv"
 	"time"
+	//"fmt"
 
 	"github.com/Sniper10754/snipermapper/api/descriptor"
 )
@@ -67,6 +68,7 @@ func ScanPorts(scanner PortScanner, start int, finish int, ch chan ScanResult) [
 	ports := makeRange(start, finish)
 	results := make([]ScanResult, finish)
 
+	
 	for _, port := range ports {
 		result := scanner.ScanPort(port)
 

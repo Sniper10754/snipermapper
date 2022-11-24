@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"net"
-	scannerapi "github.com/Sniper10754/snipermapper/api"
+	"os"
 	"strconv"
 	"syscall"
 	"time"
+
+	snipermapper "github.com/Sniper10754/snipermapper/api"
 )
 
 var title string = `
@@ -23,7 +25,7 @@ func makeRange(min, max int) []int {
     return a
 }
 
-func listScanReport(prefix string, results []scannerapi.ScanResult) {
+func listScanReport(prefix string, results []snipermapper.ScanResult) {
 	for i := 0; i < len(results); i++ {
 		scan := results[i]
 
@@ -34,12 +36,12 @@ func listScanReport(prefix string, results []scannerapi.ScanResult) {
 	
 }
 
-func scanPortsWithPrompt(scanner scannerapi.PortScanner, start int, finish int) []scannerapi.ScanResult {
-	ch := make(chan scannerapi.ScanResult)
-	var ports []scannerapi.ScanResult
+func scanPortsWithPrompt(scanner snipermapper.PortScanner, start int, finish int) []snipermapper.ScanResult {
+	ch := make(chan snipermapper.ScanResult)
+	var ports []snipermapper.ScanResult
 	
 	go func() {
-		ports = scannerapi.ScanPorts(scanner, start, finish, ch)
+		ports = snipermapper.ScanPorts(scanner, start, finish, ch)
 	}()
 
 	for {
@@ -55,13 +57,27 @@ func scanPortsWithPrompt(scanner scannerapi.PortScanner, start int, finish int) 
 	return ports
 }
 
+func contains(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+
+	return false
+}
+
 func main() {
+	stealth := contains(os.Args, "-stealth")
 	fmt.Println(title)
+
+	if !stealth {
+		fmt.Println("Stealth scan enabled")
+	}
 
 	fmt.Print("歷 Host: ")
 	var host string
 	fmt.Scanln(&host)
-
 
 	addr, err := net.LookupHost(host)
 
@@ -76,17 +92,24 @@ func main() {
 	portFinish := 80
 	timeout := 2
 
-	tcpPortScanner := scannerapi.NewScanner(scannerapi.TCP, host)
-	//udpPortScanner := scannerapi.NewScanner(scannerapi.UDP, host)
+	tcpPortScanner := snipermapper.NewScanner(snipermapper.TCP, host)
+	var udpPortScanner snipermapper.PortScanner
 	
+	if !stealth {
+		udpPortScanner = snipermapper.NewScanner(snipermapper.UDP, host)
+	}
 	// Scan duration = timeout x ports to scan (x 2 because we scan tcp and udp)
 	fmt.Printf("  Scan maximum duration: %d~ seconds \n", timeout * (portFinish * 2))
 	
 	fmt.Println("  Scanning TCP ports")
 	tcpScanResult := scanPortsWithPrompt(tcpPortScanner, portStart, portFinish)
 	
-	//fmt.Println("  Scanning UDP ports")
-	//udpScanResult := nil //scanPortList("udp", host, portsToScan, 1)
+	var udpScanResult []snipermapper.ScanResult = make([]snipermapper.ScanResult, portFinish)
+
+	if !stealth {
+		fmt.Println("  Scanning UDP ports")
+		udpScanResult = scanPortsWithPrompt(udpPortScanner, portStart, portFinish)
+	}
 
 	startTime := time.Now()
 
@@ -98,6 +121,6 @@ func main() {
 	fmt.Println()
 
 	listScanReport("  tcp/", tcpScanResult)
-	//listScanReport("  udp/", udpScanResult)
+	listScanReport("  udp/", udpScanResult)
 
 }
