@@ -4,6 +4,7 @@ import (
 	"net"
 	"strconv"
 	"time"
+
 	//"fmt"
 
 	"github.com/Sniper10754/snipermapper/api/descriptor"
@@ -15,13 +16,13 @@ const TCP NetworkProtocol = "tcp"
 const UDP NetworkProtocol = "udp"
 
 type ScanResult struct {
-	State bool
-	Port int
+	State       bool
+	Port        int
 	Description descriptor.PortDescription
 }
 
 type PortScanner interface {
-	ScanPort(port int) ScanResult 
+	ScanPort(port int) ScanResult
 }
 
 type BasicPortScanner struct {
@@ -37,15 +38,15 @@ type UDPPortScanner struct {
 }
 
 func makeRange(min, max int) []int {
-    a := make([]int, max-min+1)
-    for i := range a {
-        a[i] = min + i
-    }
-    return a
+	a := make([]int, max-min+1)
+	for i := range a {
+		a[i] = min + i
+	}
+	return a
 }
 
-// * Not sthealty 
-// 
+// * Not sthealty
+//
 // ? UDP Scan requires to send a packet to an ip, and then
 // ? check if a response is sent.
 
@@ -68,13 +69,12 @@ func ScanPorts(scanner PortScanner, start int, finish int, ch chan ScanResult) [
 	ports := makeRange(start, finish)
 	results := make([]ScanResult, finish)
 
-	
 	for _, port := range ports {
 		result := scanner.ScanPort(port)
 
 		if ch != nil {
 			ch <- result
-		}	
+		}
 
 		results = append(results, result)
 	}
@@ -87,8 +87,8 @@ func ScanPorts(scanner PortScanner, start int, finish int, ch chan ScanResult) [
 func NewScanner(protocol NetworkProtocol, address string) PortScanner {
 	switch protocol {
 	case UDP:
-		return UDPPortScanner{BasicPortScanner{Address: address}} 
-	
+		return UDPPortScanner{BasicPortScanner{Address: address}}
+
 	case TCP:
 		return TCPPortScanner{BasicPortScanner{Address: address}}
 
